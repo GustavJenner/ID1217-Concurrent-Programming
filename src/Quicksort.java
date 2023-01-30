@@ -2,10 +2,13 @@
 
 public class Quicksort {
     public static void main(String[] args) {
+        QuicksortThreaded q2 = new QuicksortThreaded();
         Quicksort q = new Quicksort();
-        int[] arr = {10, 7, 8, 9, 1, 5};
+        int[] arr = q2.randomArr(1000000,0,1000000);
+        long start = System.currentTimeMillis();
         q.quicksort(arr,0,arr.length-1);
-        q.printArr(arr);
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
 
 
     }

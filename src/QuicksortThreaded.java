@@ -1,33 +1,50 @@
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.Random;
 
 public class QuicksortThreaded{
+    private int threads = 64;
+    final ReentrantLock lock = new ReentrantLock();
     public static void main(String[] args) throws InterruptedException {
-        int[] arr = {10, 7, 8, 9, 1, 5};
+        int[] arr = randomArr(1000000,0,100000);
+        QuicksortThreaded object = new QuicksortThreaded();
 
-        QThread q = new QThread(arr,0,arr.length-1);
+        QThread q = object.new QThread(arr,0,arr.length-1);
         Thread t = new Thread(q);
+        long start = System.currentTimeMillis();
         t.start();
         t.join();
+        long end = System.currentTimeMillis();
+        System.out.println(end-start);
         printArr(arr);
 
     }
     static void printArr(int[] arr){
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for(int i:arr){
-            s += String.valueOf(i)+",";
+            s.append(i).append(",");
         }
         System.out.println(s);
     }
-}
+    static int[] randomArr(int length, int min, int max){
+        Random rand = new Random();
+        int[] arr = new int[length];
+        for(int i=0;i<arr.length;i++){
+            arr[i] = rand.nextInt(max-min) + min;
+
+        }
+        return arr;
+    }
+
 
  class QThread implements Runnable{
-    private int[] arr;
-    private int low;
-    private int high;
+    private final int[] arr;
+    private final int low;
+    private final int high;
 
-    private final ReentrantLock lock = new ReentrantLock();
+    private boolean flag = false;
 
-    private boolean exit;
+
+
     public QThread(int[] arr, int low, int high){
         this.arr = arr;
         this.low = low;
@@ -55,33 +72,53 @@ public class QuicksortThreaded{
     swap(arr,i+1,high);
     return i+1;
    }
+   @Override
    public void run(){
-        if(low<high) {
-            int pi = 0;
+
+
             lock.lock();
             try {
-                 pi = partition(arr, low, high);
-
+                if(low<high && threads != 0) {
+                    threads -= 2;
+                    flag = true;
+                }
             }finally {
-                System.out.println(Thread.currentThread().getName());
                 lock.unlock();
-
             }
-            QThread q1 = new QThread(arr,low,pi-1);
-            QThread q2 = new QThread(arr,pi+1,high);
-            Thread t1 = new Thread(q1);
-            Thread t2 = new Thread(q2);
-            t1.start();
-            t2.start();
+
+            int pi = partition(arr, low, high);
+            if(flag){
+                flag = false;
+                QThread q1 = new QThread(arr,low,pi-1);
+                QThread q2 = new QThread(arr,pi+1,high);
+                Thread t1 = new Thread(q1);
+                Thread t2 = new Thread(q2);
+                t1.start();
+                t2.start();
+                try {
+                    t1.join();
+                    t2.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
 
         }
-        else{
-            Thread.currentThread().interrupt();
+
+        else if(low<high){
+            quicksort(arr,low,pi-1);
+            quicksort(arr,pi+1,high);
 
         }
-
-
-
    }
+     public void quicksort(int[] arr,int low, int high){
+         if(low<high) {
+             int pi = partition(arr, low, high);
+             quicksort(arr,low,pi-1);
+             quicksort(arr,pi+1,high);
+         }
 
+     }
+
+}
 }
