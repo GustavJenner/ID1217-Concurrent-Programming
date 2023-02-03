@@ -1,14 +1,26 @@
-import java.util.Arrays;
+import java.io.*;
+import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.Random;
 
 public class QuicksortThreaded{
-    private int threads = 64;
+    private int threads;
     final ReentrantLock lock = new ReentrantLock();
-    public static void main(String[] args) throws InterruptedException {
-        int[] arr = randomArr(10000000,0,10000000);
-        int[] arr2 = arr.clone();
+
+    private final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
+    private int n;
+    public static void main(String[] args) throws InterruptedException, IOException {
+        String PATH = "C:\\Users\\Gustav Jenner\\Desktop\\array.txt";
         QuicksortThreaded object = new QuicksortThreaded();
+        object.cInput();
+
+        //show that the array is sorted
+        //int[] arr = randomArr(object.n,0,100);
+        //printArr(arr);
+
+        int[] arr = object.readFromFile(PATH);
+
 
         QThread q = object.new QThread(arr,0,arr.length-1);
         Thread t = new Thread(q);
@@ -20,28 +32,53 @@ public class QuicksortThreaded{
         long end = System.currentTimeMillis();
         System.out.println(end-start);
 
+        //after sorted
+        //printArr(arr)
 
-        QThread b = object.new QThread(arr2,0,arr2.length-1);
 
-        //time normal quicksort
-        long start2 = System.currentTimeMillis();
-        b.quicksort(arr2,0,arr2.length-1);
-        long end2 = System.currentTimeMillis();
-        System.out.println(end2-start2);
 
-        //check if the arrays are the same
-        if(Arrays.equals(arr,arr2)){
-            System.out.println("passed");
-        }
+
+
 
     }
-    //static that prints input array
+    static void writeToFile(int[] arr, String path) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(path));
+        for (int j : arr) {
+            writer.write(j + ",");
+        }
+        writer.close();
+    }
+
+    public int[] readFromFile(String path) throws IOException {
+
+        int[] arr = new int[n];
+        File file = new File(path);
+        Scanner sc = new Scanner(file).useDelimiter(",");
+        int i = 0;
+        while(sc.hasNextInt()){
+            arr[i] = sc.nextInt();
+            i++;
+        }
+        sc.close();
+        return arr;
+    }
+    //static method that prints input array
     static void printArr(int[] arr){
         StringBuilder s = new StringBuilder();
         for(int i:arr){
             s.append(i).append(",");
         }
         System.out.println(s);
+    }
+    //consol input
+    public void cInput() throws IOException {
+        System.out.println("Threads:");
+        String threads = in.readLine();
+        System.out.println("array length:");
+        String n = in.readLine();
+        this.threads = Integer.parseInt(threads);
+        this.n = Integer.parseInt(n);
+        in.close();
     }
     //static method that creates a random array of a certain length
     //min and max determine the range of numbers
@@ -100,8 +137,9 @@ public class QuicksortThreaded{
 
     }
     //lastly pivot and i+1 swap
-    swap(arr,i+1,high);
-    return i+1;
+    i++;
+    swap(arr,i,high);
+    return i;
    }
    @Override
    public void run(){
@@ -109,7 +147,7 @@ public class QuicksortThreaded{
             //locking part where threads check for thread count
             lock.lock();
             try {
-                if(low<high && threads != 0) {
+                if(low<high && threads >= 2) {
                     threads -= 2;
                     //flag for indicating that more threads can be created
                     flag = true;
@@ -120,12 +158,12 @@ public class QuicksortThreaded{
 
 
             if(flag){
-                int pi = partition(arr, low, high);
+                int part = partition(arr, low, high);
                 flag = false;
                 //instead of calling the quicksort method recursively
                 //a new thread is created
-                QThread q1 = new QThread(arr,low,pi-1);
-                QThread q2 = new QThread(arr,pi+1,high);
+                QThread q1 = new QThread(arr,low,part-1);
+                QThread q2 = new QThread(arr,part+1,high);
                 Thread t1 = new Thread(q1);
                 Thread t2 = new Thread(q2);
                 t1.start();
@@ -133,6 +171,9 @@ public class QuicksortThreaded{
                 try {
                     t1.join();
                     t2.join();
+
+
+
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -142,9 +183,9 @@ public class QuicksortThreaded{
         //if no more threads are available
         //the quicksort is done recursively
         else if(low<high){
-            int pi = partition(arr, low, high);
-            quicksort(arr,low,pi-1);
-            quicksort(arr,pi+1,high);
+            int part = partition(arr, low, high);
+            quicksort(arr,low,part-1);
+            quicksort(arr,part+1,high);
 
         }
    }

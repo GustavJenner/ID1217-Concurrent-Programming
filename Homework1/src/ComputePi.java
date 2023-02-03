@@ -11,7 +11,6 @@ public class ComputePi {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         ComputePi pi = new ComputePi();
-
         pi.cInput();
 
         PiThread pt = pi.new PiThread(0, 1, f(0), f(1), 0);
@@ -36,9 +35,9 @@ public class ComputePi {
         System.out.println("Threads:");
         String threads = in.readLine();
         System.out.println("e:");
-        String e = in.readLine();
+        String power = in.readLine();
         this.threads = Integer.parseInt(threads);
-        this.e = Double.parseDouble(e);
+        this.e = Math.pow(10,-Double.parseDouble(power));
         in.close();
 
     }
@@ -111,12 +110,13 @@ public class ComputePi {
 
 
             }  else {
+                //will only happen if there are more threads than needed
                 ans = area;
             }
 
 
         }
-
+        //for returning the thread calculations
         public double getAns() {
             return ans;
 
