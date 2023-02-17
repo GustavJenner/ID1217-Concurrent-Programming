@@ -16,10 +16,10 @@ public class QuicksortThreaded{
         object.cInput();
 
         //show that the array is sorted
-        //int[] arr = randomArr(object.n,0,100);
-        //printArr(arr);
+        int[] arr = randomArr(object.n,0,100);
+        printArr(arr);
 
-        int[] arr = object.readFromFile(PATH);
+        //int[] arr = object.readFromFile(PATH);
 
 
         QThread q = object.new QThread(arr,0,arr.length-1);
@@ -33,7 +33,7 @@ public class QuicksortThreaded{
         System.out.println(end-start);
 
         //after sorted
-        //printArr(arr)
+        printArr(arr);
 
 
 
