@@ -1,5 +1,4 @@
-import java.sql.Time;
-import java.sql.Timestamp;
+
 import java.util.Random;
 
 public class Cars extends Thread {
@@ -41,7 +40,7 @@ public class Cars extends Thread {
     public void run() {
         while(this.trips != 0){
 
-            System.out.println("Car"+getCarID()+" waiting to cross bridge"+ bridge.getTimestamp() +" towards "+getDir());
+            System.out.println("Car"+getCarID()+" waiting to cross bridge at "+ bridge.getTimestamp() +" towards "+getDir());
             try {
                 bridge.crossBridge(dir);
             } catch (InterruptedException e) {

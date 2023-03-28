@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Random;
+
 
 public class Bridge {
     //true = north, false = south
@@ -21,6 +20,7 @@ public class Bridge {
             this.wait();
         }
         addCar();
+        //old code
         this.notify();
         this.dir = dir;
 
@@ -28,9 +28,12 @@ public class Bridge {
 
     //synchronized method for leaving bridge
     public synchronized void overBridge(int id, String dir) throws InterruptedException {
-        System.out.println("Car" + id + " crossed bridge " + "at the time " + getTimestamp() + "towards " + dir);
+        System.out.println("Car" + id + " crossed bridge " + "at the time " + getTimestamp() + " towards " + dir);
         removeCar();
-
+        //new code
+        if(count == 0){
+            notifyAll();
+        }
 
     }
     //new car is at the bridge
