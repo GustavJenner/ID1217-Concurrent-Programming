@@ -9,6 +9,8 @@ public class BH {
     Body[] bodies;
     int DT = 1;
 
+    double percentage = 0.0;
+
 
     public BH(int gnumBodies, int numSteps, double mass, int bodyPerRow, double far, double side){
         this.gnumBodies = gnumBodies;
@@ -54,19 +56,19 @@ public class BH {
 
             }
             for (int i = 0; i < tree.gnumBodies; i++) {
-
                 tree.root.calculateForce(tree.bodies[i]);
+                tree.percentage += tree.bodies[i].count;
 
+        }   //for finding percentage of bodies being aprox
+            //System.out.println(tree.percentage/ tree.gnumBodies);
 
-
-            }
-            for (int i = 0; i < tree.gnumBodies; i++) {
+            for(int i = 0; i < tree.gnumBodies;i++){
                 tree.bodies[i].movePoint(tree.DT);
                 tree.bodies[i].force.x = tree.bodies[i].force.y = 0.0;
             }
-        }
+            }
         System.out.println((System.nanoTime()-start)/1e9);
-        tree.broadcast();
+        //tree.broadcast();
 
     }
 

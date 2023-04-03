@@ -4,6 +4,8 @@ public class Body {
     Point force;
     double mass;
 
+    int count = 0;
+
     int id;
     public Body(Point position, Point velocity,Point force, double mass, int id){
         this.position = position;

@@ -18,6 +18,7 @@ public class Worker extends Thread{
     @Override
     public void run() {
         //for time measurement
+
         long start = System.nanoTime();
         for(int i = 0; i < b.numSteps;i++) {
             b.calculateForce(w);
@@ -38,9 +39,10 @@ public class Worker extends Thread{
             }
         }
         if(w==0){
-            b.broadcast();
+            //b.broadcast();
             System.out.println((System.nanoTime()-start)/1e9);
         }
 
     }
 }
+

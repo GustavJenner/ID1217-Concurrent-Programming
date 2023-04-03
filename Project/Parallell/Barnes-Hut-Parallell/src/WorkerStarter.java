@@ -40,7 +40,7 @@ public class WorkerStarter {
       CyclicBarrier barrier = new CyclicBarrier(numWorkers);
 
         for(int i = 0; i < numWorkers;i++){
-            new Worker(i,bodies,barrier,numSteps,far,side).start();
+            new Worker(i,bodies,gnumBodies,barrier,numSteps,far,side,numWorkers).start();
         }
 
 

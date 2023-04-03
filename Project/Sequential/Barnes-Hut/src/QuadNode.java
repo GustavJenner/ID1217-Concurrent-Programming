@@ -97,6 +97,9 @@ public class QuadNode {
             direction = new Point(this.body.position.x-body.position.x,this.body.position.y-body.position.y);
             body.force.x += magnitude*direction.x/distance;
             body.force.y += magnitude*direction.y/distance;
+            //if(this.body.id != -1){
+                //body.count++;
+            //}
 
         }
 

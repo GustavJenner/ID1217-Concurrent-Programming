@@ -70,7 +70,7 @@ public class nBody {
             bodies[i].position.x = bodies[i].position.x + deltap.x;
             bodies[i].position.y = bodies[i].position.y + deltap.y;
             bodies[i].force.x = bodies[i].force.y = 0.0;
-            bodies[i].broadCastPos(i);
+            //bodies[i].broadCastPos(i);
         }
     }
     //main
